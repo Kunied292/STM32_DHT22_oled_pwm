@@ -17,10 +17,10 @@
  *   OLED    SDA  -> PB7  (I2C1_SDA)
  *
  *   พัดลม 4-pin
- *     Pin1 (GND/ดำ)       -> GND ของ 12V power supply
+ *     Pin1 (GND/ดำ)        -> GND ของ 12V power supply
  *     Pin2 (12V/แดง-เหลือง) -> +12V ของ 12V power supply
- *     Pin3 (Tach/เขียว)    -> PB5  (ไม่บังคับ ใช้อ่าน RPM)
- *     Pin4 (PWM/น้ำเงิน)   -> PA6  (สัญญาณ PWM 25kHz)
+ *     Pin3 (Tach/เขียว)     -> ไม่ต้องต่อ (ไม่ได้อ่าน RPM)
+ *     Pin4 (PWM/น้ำเงิน)    -> PA6  (สัญญาณ PWM 25kHz)
  *
  *   หมายเหตุ: สัญญาณ PWM ตามสเปก Intel เป็นระดับ 5V ถ้าพัดลมไม่ตอบสนองกับ
  *   3.3V ให้เพิ่มทรานซิสเตอร์ (NPN + R) หรือ level shifter ระหว่าง PA6 กับ Pin4
@@ -36,7 +36,6 @@
 #define DHTPIN        PB12   // ขา data ของ DHT22
 #define DHTTYPE       DHT22  // ชนิดเซนเซอร์
 #define FAN_PWM_PIN   PA6    // ขา PWM ของพัดลม (TIM3_CH1)
-#define FAN_TACH_PIN  PB5    // ขา Tach อ่านรอบพัดลม (ถ้าไม่ใช้ comment ทิ้ง)
 
 // ========================== OLED ==============================
 #define SCREEN_WIDTH  128
@@ -59,26 +58,10 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 HardwareTimer *fanPwmTimer = nullptr;
 
-// ตัวแปรอ่าน RPM จาก Tach
-volatile uint32_t tachPulses = 0;
-volatile uint32_t lastTachUs = 0;
-uint32_t rpm = 0;
-
 // ==================== ฟังก์ชันช่วย (prototype) ====================
 float   computeDuty(float tempC);
 void    setFanDuty(float dutyPercent);
-void    readFanRpm();
 void    drawOled(float tempC, float hum, float duty);
-
-// ==================== Interrupt นับรอบพัดลม ====================
-void tachISR() {
-  // debounce: ไม่นับ pulse ที่เข้ามาถี่เกิน 1 ms (กันสัญญาณรบกวน/ringing)
-  uint32_t now = micros();
-  if (now - lastTachUs > 1000) {
-    tachPulses++;  // พัดลม 4-pin ให้ 2 pulse ต่อ 1 รอบ
-    lastTachUs = now;
-  }
-}
 
 // ================================================================
 void setup() {
@@ -105,10 +88,6 @@ void setup() {
   fanPwmTimer->setPWM(1, FAN_PWM_PIN, PWM_FREQ_HZ, 0); // channel 1, PA6
   // สตาร์ทที่ duty ต่ำสุดให้พัดลมหมุนเบา ๆ ก่อน
   setFanDuty(DUTY_MIN_PERCENT);
-
-  // ---- Tach / RPM ----
-  pinMode(FAN_TACH_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(FAN_TACH_PIN), tachISR, FALLING);
 
   Serial.println(F("เริ่มทำงานเรียบร้อย"));
 }
@@ -138,14 +117,10 @@ void loop() {
     float duty = computeDuty(temp);
     setFanDuty(duty);
 
-    // ---- อ่าน RPM ----
-    readFanRpm();
-
     // ---- แสดงผล Serial ----
     Serial.print(F("อุณหภูมิ: ")); Serial.print(temp, 1); Serial.print(F(" C  "));
     Serial.print(F("ความชื้น: ")); Serial.print(hum, 1); Serial.print(F(" %  "));
-    Serial.print(F("Fan: ")); Serial.print(duty, 0); Serial.print(F(" %  "));
-    Serial.print(F("RPM: ")); Serial.println(rpm);
+    Serial.print(F("Fan PWM: ")); Serial.print(duty, 0); Serial.println(F(" %"));
 
     // ---- แสดงผล OLED ----
     drawOled(temp, hum, duty);
@@ -176,25 +151,6 @@ void setFanDuty(float dutyPercent) {
 }
 
 // ================================================================
-// อ่าน RPM จาก Tach (นับ pulse ในช่วง 1 วินาที)
-// พัดลม 4-pin: 2 pulse / รอบ  => RPM = pulse/2 * 60
-// ================================================================
-void readFanRpm() {
-  uint32_t pulses;
-  noInterrupts();
-  pulses = tachPulses;
-  tachPulses = 0;
-  interrupts();
-
-  // pulses ถูกนับในช่วง READ_INTERVAL_MS มิลลิวินาที
-  float seconds = (float)READ_INTERVAL_MS / 1000.0f;
-  rpm = (uint32_t)(((float)pulses / 2.0f) / seconds * 60.0f);
-
-  // กรองค่าผิดปกติ (พัดลมจริงไม่เกิน ~20000 RPM) ค่าที่เพี้ยนให้แสดง 0
-  if (rpm > 20000) rpm = 0;
-}
-
-// ================================================================
 // วาดผลลงจอ OLED
 // ================================================================
 void drawOled(float tempC, float hum, float duty) {
@@ -215,16 +171,11 @@ void drawOled(float tempC, float hum, float duty) {
   display.print(hum, 1);
   display.print(F(" %"));
 
-  // --- Duty พัดลม ---
-  display.setCursor(0, 34);
-  display.print(F("Fan : "));
+  // --- Duty PWM ของพัดลม ---
+  display.setCursor(0, 38);
+  display.print(F("Fan PWM: "));
   display.print(duty, 0);
   display.print(F(" %"));
-
-  // --- RPM ---
-  display.setCursor(0, 46);
-  display.print(F("RPM : "));
-  display.print(rpm);
 
   // --- แถบแสดงระดับความเร็ว ---
   int barWidth = map((long)duty, 0, 100, 0, SCREEN_WIDTH);
