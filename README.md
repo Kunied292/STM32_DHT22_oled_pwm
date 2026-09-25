@@ -79,6 +79,13 @@
    พัดลมหลายรุ่นยังหมุนได้ แต่ถ้าไม่ตอบสนอง ให้เพิ่ม NPN transistor (เช่น 2N2222)
    + R 1k คั่นระหว่าง PA6 → Pin4
 
+### 📷 ภาพวงจรจริง
+
+<p align="center">
+  <img src="docs/circuit_1.jpg" alt="วงจรจริง (ภาพที่ 1)" width="48%">
+  <img src="docs/circuit_2.jpg" alt="วงจรจริง (ภาพที่ 2)" width="48%">
+</p>
+
 ---
 
 ## 💾 ซอฟต์แวร์ (Dependencies)
@@ -110,6 +117,12 @@ pio device monitor -b 115200
 หรือใช้ GUI ของ VS Code + PlatformIO (กดปุ่ม Upload / Serial Monitor)
 
 > **หมายเหตุ**: โปรเจกต์นี้ตั้ง `upload_protocol = stlink` ไว้แล้วใน `platformio.ini`
+
+### 📺 ตัวอย่างผลลัพธ์จาก Serial Monitor
+
+<p align="center">
+  <img src="docs/serial_monitor.png" alt="ผลลัพธ์จาก Serial Monitor" width="70%">
+</p>
 
 ---
 
