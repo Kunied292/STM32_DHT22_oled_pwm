@@ -7,7 +7,7 @@
 
 ---
 
-## ✨ คุณสมบัติ
+## คุณสมบัติ
 
 - อ่านอุณหภูมิ / ความชื้นจาก DHT22 ทุก 2 วินาที
 - ปรับความเร็วพัดลมแบบ **เชิงเส้น** ตามอุณหภูมิ (25°C → 20%, 40°C → 100%)
@@ -16,7 +16,7 @@
 
 ---
 
-## 🧰 อุปกรณ์ที่ใช้
+## อุปกรณ์ที่ใช้
 
 | # | อุปกรณ์ | หมายเหตุ |
 |---|---|---|
@@ -29,7 +29,7 @@
 
 ---
 
-## 🔌 การต่อสาย (Wiring)
+## การต่อสาย (Wiring)
 
 ### ตารางขา
 
@@ -69,7 +69,7 @@
        (Pin3 Tach ไม่ต้องต่อ)
 ```
 
-### ⚠️ ข้อควรระวัง
+### ข้อควรระวัง
 
 1. **GND ร่วม** — ต้องต่อ GND ของ STM32 เข้ากับ GND ของ 12V power supply ด้วย
    ไม่งั้นสัญญาณ PWM จะไม่ทำงาน
@@ -79,7 +79,7 @@
    พัดลมหลายรุ่นยังหมุนได้ แต่ถ้าไม่ตอบสนอง ให้เพิ่ม NPN transistor (เช่น 2N2222)
    + R 1k คั่นระหว่าง PA6 → Pin4
 
-### 📷 ภาพวงจรจริง
+### ภาพวงจรจริง
 
 <p align="center">
   <img src="docs/circuit_1.jpg" alt="วงจรจริง (ภาพที่ 1)" width="48%">
@@ -88,7 +88,7 @@
 
 ---
 
-## 💾 ซอฟต์แวร์ (Dependencies)
+## ซอฟต์แวร์ (Dependencies)
 
 Library ทั้งหมดถูกประกาศใน `platformio.ini` (`lib_deps`):
 
@@ -101,7 +101,7 @@ Library ทั้งหมดถูกประกาศใน `platformio.ini` 
 
 ---
 
-## 🚀 Build & Upload
+## Build & Upload
 
 ```bash
 # build
@@ -118,7 +118,7 @@ pio device monitor -b 115200
 
 > **หมายเหตุ**: โปรเจกต์นี้ตั้ง `upload_protocol = stlink` ไว้แล้วใน `platformio.ini`
 
-### 📺 ตัวอย่างผลลัพธ์จาก Serial Monitor
+### ตัวอย่างผลลัพธ์จาก Serial Monitor
 
 <p align="center">
   <img src="docs/serial_monitor.png" alt="ผลลัพธ์จาก Serial Monitor" width="70%">
@@ -126,7 +126,7 @@ pio device monitor -b 115200
 
 ---
 
-## ⚙️ การตั้งค่า (Configuration)
+## การตั้งค่า (Configuration)
 
 ค่าทั้งหมดอยู่ด้านบนของ `src/main.cpp`:
 
@@ -152,7 +152,7 @@ pio device monitor -b 115200
 
 ---
 
-## 🛠️ Troubleshooting (ปัญหาที่พบบ่อย)
+## Troubleshooting (ปัญหาที่พบบ่อย)
 
 ### 1. `Debug adapter doesn't support 'hla_swd' transport` ตอนอัปโหลด
 
@@ -162,7 +162,7 @@ OpenOCD เวอร์ชันใหม่ (0.12.0+) ยกเลิก transp
 **วิธีแก้**: แก้ไฟล์ `~/.platformio/platforms/ststm32/platform.py` บรรทัด 205
 เปลี่ยน `"hla_swd" if link == "stlink" else "swd"` เป็น `"swd"`
 
-> ⚠️ การแก้อยู่ที่ไฟล์ของ PlatformIO เอง อาจถูกทับเมื่อ `pio platform update`
+> การแก้อยู่ที่ไฟล์ของ PlatformIO เอง อาจถูกทับเมื่อ `pio platform update`
 
 ### 2. Serial Monitor ว่าง / ค้าง ไม่ขึ้นอะไรเลย
 
@@ -181,7 +181,7 @@ ST-Link V2 (SWDIO/SWCLK) ใช้แค่อัปโหลดโปรแก�
 
 ---
 
-## 📁 โครงสร้างโปรเจกต์
+## โครงสร้างโปรเจกต์
 
 ```
 STM32_DHT22_oled_pwm/
@@ -196,6 +196,6 @@ STM32_DHT22_oled_pwm/
 
 ---
 
-## 📝 License
+## License
 
 MIT License — นำไปใช้ / ดัดแปลง / ต่อยอดได้อย่างอิสระ
