@@ -8,7 +8,7 @@ Board: **STM32F103C8T6 (Blue Pill)** — flashed via **ST-Link V2 (SWD)**
 
 ---
 
-## ✨ Features
+## Features
 
 - Reads temperature / humidity from the DHT22 every 2 seconds
 - Adjusts fan speed **linearly** with temperature (25°C → 20%, 40°C → 100%)
@@ -17,7 +17,7 @@ Board: **STM32F103C8T6 (Blue Pill)** — flashed via **ST-Link V2 (SWD)**
 
 ---
 
-## 🧰 Hardware
+## Hardware
 
 | # | Component | Notes |
 |---|---|---|
@@ -30,7 +30,7 @@ Board: **STM32F103C8T6 (Blue Pill)** — flashed via **ST-Link V2 (SWD)**
 
 ---
 
-## 🔌 Wiring
+## Wiring
 
 ### Pin table
 
@@ -70,7 +70,7 @@ Board: **STM32F103C8T6 (Blue Pill)** — flashed via **ST-Link V2 (SWD)**
        (Fan Pin3 Tach not connected)
 ```
 
-### ⚠️ Important notes
+### Important notes
 
 1. **Common GND** — Connect the STM32 GND to the 12V power supply GND,
    otherwise the PWM signal will not work.
@@ -80,7 +80,7 @@ Board: **STM32F103C8T6 (Blue Pill)** — flashed via **ST-Link V2 (SWD)**
    outputs 3.3V. Many fans still work; if yours does not respond, add an NPN
    transistor (e.g. 2N2222) + 1k resistor between PA6 and Pin4.
 
-### 📷 Actual circuit photos
+### Actual circuit photos
 
 <p align="center">
   <img src="docs/circuit_1.jpg" alt="Circuit photo 1" width="48%">
@@ -89,7 +89,7 @@ Board: **STM32F103C8T6 (Blue Pill)** — flashed via **ST-Link V2 (SWD)**
 
 ---
 
-## 💾 Dependencies
+## Dependencies
 
 All libraries are declared in `platformio.ini` (`lib_deps`):
 
@@ -102,7 +102,7 @@ All libraries are declared in `platformio.ini` (`lib_deps`):
 
 ---
 
-## 🚀 Build & Upload
+## Build & Upload
 
 ```bash
 # build
@@ -119,7 +119,7 @@ Or use the VS Code + PlatformIO GUI (Upload / Serial Monitor buttons).
 
 > **Note**: This project already sets `upload_protocol = stlink` in `platformio.ini`.
 
-### 📺 Serial Monitor output example
+### Serial Monitor output example
 
 <p align="center">
   <img src="docs/serial_monitor.png" alt="Serial Monitor output" width="70%">
@@ -127,7 +127,7 @@ Or use the VS Code + PlatformIO GUI (Upload / Serial Monitor buttons).
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 All settings are at the top of `src/main.cpp`:
 
@@ -153,7 +153,7 @@ All settings are at the top of `src/main.cpp`:
 
 ---
 
-## 🛠️ Troubleshooting
+## Troubleshooting
 
 ### 1. `Debug adapter doesn't support 'hla_swd' transport` on upload
 
@@ -182,7 +182,7 @@ serial data**. You need a separate UART path:
 
 ---
 
-## 📁 Project structure
+## Project structure
 
 ```
 STM32_DHT22_oled_pwm/
@@ -198,6 +198,6 @@ STM32_DHT22_oled_pwm/
 
 ---
 
-## 📝 License
+## License
 
 MIT License — free to use, modify, and extend.
